@@ -1,9 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum BattleState {START, PLAYERTURN, ENEMYTURN, WON, LOST }
+
+public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
 
 public class BattleSystem : MonoBehaviour
 {
@@ -28,9 +28,9 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.START;
         StartCoroutine(SetUpBattle());
-        
+
     }
-    
+
     IEnumerator SetUpBattle()
     {
         GameObject playerGO = Instantiate(playerPrefab, playerBattleStation);
@@ -38,28 +38,46 @@ public class BattleSystem : MonoBehaviour
         GameObject enemyGO = Instantiate(enemyPrefab, enemyBattleStation);
         enemyUnit = enemyGO.GetComponent<Unit>();
 
-        dialogueText.text = "Racer " + enemyUnit.unitName + "has appeared!";
+        dialogueText.text = "Racer " + enemyUnit.unitName + "has pulled up on you!";
 
         playerHUD.SetHUD(playerUnit);
         enemyHUD.SetHUD(enemyUnit);
-        
+
         yield return new WaitForSeconds(2f);
         state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
     IEnumerator PlayerHeal()
     {
-        playerUnit.Heal(5);
+        int rand = Random.Range(1, 3);
+        playerUnit.Heal(10);
         yield return new WaitForSeconds(1f);
+        switch (rand)
+        {
+            case <= 1:
+                dialogueText.text = "You made a quick pit stop!";
+                break;
+            case >= 2:
+                dialogueText.text = "Your gas tank has been refilled. Pettle to the metal!";
+                break;
+        }
     }
     IEnumerator PlayerAttack()
     {
         bool isDead = enemyUnit.TakeDamage(playerUnit.damage);
-
+        int rand = Random.Range(1, 3);
+        switch (rand)
+        {
+            case <= 1:
+                dialogueText.text = "The drift was successful!";
+                break;
+            case >= 2:
+                dialogueText.text = "The you overtook the enemy racer!";
+                break;
+        }
         enemyHUD.SetHP(enemyUnit.currentHP);
-        dialogueText.text = "The drift was successful!";
         yield return new WaitForSeconds(2f);
-        
+
         if (isDead)
         {
             state = BattleState.WON;
@@ -74,10 +92,10 @@ public class BattleSystem : MonoBehaviour
     }
     IEnumerator EnemyTurn()
     {
-        dialogueText.text = enemyUnit.unitName + " attacks!";
-        
+        dialogueText.text = enemyUnit.unitName + " slides into you!";
+
         yield return new WaitForSeconds(1f);
-        
+
         bool isDead = playerUnit.TakeDamage(enemyUnit.damage);
 
         playerHUD.SetHP(playerUnit.currentHP);
@@ -97,24 +115,24 @@ public class BattleSystem : MonoBehaviour
     }
     void EndBattle()
     {
-        if(state == BattleState.WON)
+        if (state == BattleState.WON)
         {
             dialogueText.text = "YOU HAVE WON THE DEADLY RACE";
 
         }
         else if (state == BattleState.LOST)
         {
-            dialogueText.text = "Sadly, you have lost the race";
+            dialogueText.text = "Better luck next time kid!";
         }
     }
     void PlayerTurn()
     {
-        dialogueText.text = "Choose an action:";
+        dialogueText.text = "Choose an action racer!: ";
     }
 
     public void OnAttack()
     {
-        if(state != BattleState.PLAYERTURN)
+        if (state != BattleState.PLAYERTURN)
         {
             return;
         }
