@@ -28,7 +28,6 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.START;
         StartCoroutine(SetUpBattle());
-
     }
 
     IEnumerator SetUpBattle()
