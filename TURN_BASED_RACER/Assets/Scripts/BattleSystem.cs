@@ -49,32 +49,14 @@ public class BattleSystem : MonoBehaviour
     }
     IEnumerator PlayerHeal()
     {
-        int rand = Random.Range(1, 3);
         playerUnit.Heal(10);
         yield return new WaitForSeconds(1f);
-        switch (rand)
-        {
-            case <= 1:
-                dialogueText.text = "You made a quick pit stop!";
-                break;
-            case >= 2:
-                dialogueText.text = "Your gas tank has been refilled. Pettle to the metal!";
-                break;
-        }
-    }
+        dialogueText.text = "Your gas tank has been refilled. Peddle to the metal!";
+  }
     IEnumerator PlayerAttack()
     {
         bool isDead = enemyUnit.TakeDamage(playerUnit.damage);
-        int rand = Random.Range(1, 3);
-        switch (rand)
-        {
-            case <= 1:
-                dialogueText.text = "The drift was successful!";
-                break;
-            case >= 2:
-                dialogueText.text = "The you overtook the enemy racer!";
-                break;
-        }
+        dialogueText.text = "The drift was successful!";
         enemyHUD.SetHP(enemyUnit.currentHP);
         yield return new WaitForSeconds(2f);
 
